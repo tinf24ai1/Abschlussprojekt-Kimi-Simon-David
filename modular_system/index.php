@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once __DIR__ . '/lib/database.php'; // Establishes $pdo
+require_once __DIR__ . '/lib/database.php'; 
 require_once __DIR__ . '/lib/functions.php';
 
 $moduleIdentifier = getModuleIdentifier();
@@ -48,7 +48,6 @@ try {
                 exit;
             } else {
                 // Errors are in $_SESSION['form_errors'], data in $_SESSION['form_data']
-                // Redirect back to the form, which will pick up session data
                 $redirectAction = $recordIdToSave ? 'edit' : 'create';
                 $redirectIdParam = $recordIdToSave ? '&id=' . urlencode($recordIdToSave) : '';
                 $_SESSION['flash_message'] = "Failed to save. Please correct the errors below.";
@@ -60,8 +59,6 @@ try {
 
         case 'delete':
             if (!$id) die("No ID provided for deletion.");
-            // Add CSRF token check here for security, perhaps passed via POST or a confirmation form.
-            // For simplicity, a GET request is used here, but POST with CSRF is safer.
             if (deleteRecord($pdo, $config, $id)) {
                  $_SESSION['flash_message'] = htmlspecialchars($config['module_title_singular'] ?? 'Item') . " deleted successfully.";
                  $_SESSION['flash_message_type'] = 'success';
@@ -73,18 +70,16 @@ try {
             exit;
 
         default:
-            die("Unknown action: " . htmlspecialchars($action));
+            die("Was tun Sie da, Mann?: " . htmlspecialchars($action)); // https://www.php.net/manual/en/function.htmlspecialchars.php
     }
 } catch (PDOException $e) {
-    // Log error
     error_log("Database Error in index.php: " . $e->getMessage());
     // User-friendly message
-    die("A database error occurred. Please try again later or contact support. Details: " . $e->getMessage());
+    die("Fehler!: " . $e->getMessage());
 } catch (Exception $e) {
     // Log error
     error_log("General Error in index.php: " . $e->getMessage());
-    // User-friendly message
-    die("An unexpected error occurred: " . $e->getMessage());
+    die("Fehler!: " . $e->getMessage());
 }
 
 ?>

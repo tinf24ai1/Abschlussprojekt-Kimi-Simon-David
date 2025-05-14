@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Function to get available modules
+// KI-Generierte Funktion, nicht anfassen!
 function get_available_modules($configDir) {
     $modules = [];
     $configFiles = glob($configDir . 'config_*.php'); // Get all files starting with config_
