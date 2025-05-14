@@ -1,7 +1,7 @@
 -- Create a database if it doesn't exist (optional)
 -- CREATE DATABASE IF NOT EXISTS modular_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 -- USE modular_db;
-
+ 
 -- Table for the Book Tracker example
 CREATE TABLE IF NOT EXISTS `my_books` (
   `book_id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS `my_books` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Table for Expense Categories (for foreign key in expenses)
+
 CREATE TABLE IF NOT EXISTS `expense_categories` (
   `cat_id` INT AUTO_INCREMENT PRIMARY KEY,
   `category_name` VARCHAR(100) NOT NULL UNIQUE,
