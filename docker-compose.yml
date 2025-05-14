@@ -1,0 +1,49 @@
+version: '3.8' # Specifies the Docker Compose file format version
+
+services:
+  # Your PHP Application Service
+  web:
+    build:
+      context: . # Tells Compose to look for the Dockerfile in the current directory
+      dockerfile: Dockerfile # Specifies the name of your Dockerfile (if not Dockerfile)
+    container_name: my_php_app # Optional: a custom name for your PHP container
+    ports:
+      - "8080:80" # Map port 8080 on your host to port 80 in the container
+    volumes:
+      # Mounts your local 'modular_system' directory into the container's web root.
+      # This is great for development as changes are reflected immediately.
+      # For production, you might prefer to rely solely on the COPY in Dockerfile.
+      - ./modular_system:/var/www/html
+    depends_on:
+      - db # Tells Compose to start the 'db' service before this 'web' service
+    environment:
+      # Example: Pass database connection details to your PHP app
+      # You'll need to configure your PHP app to read these
+      DB_HOST: db
+      DB_DATABASE: my_app_db
+      DB_USER: my_app_user
+      DB_PASSWORD: my_app_password # Use a strong password, consider secrets for production
+      DB_ROOT_PASSWORD: root_password_for_mysql # MySQL root password, set below
+
+  # MySQL Database Service
+  db:
+    image: mysql:8.0 # Use an official MySQL image (you can choose a specific version)
+    container_name: my_mysql_db # Optional: a custom name for your MySQL container
+    restart: always # Always restart the container if it stops
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_password_for_mysql} # Password for the MySQL root user
+      MYSQL_DATABASE: ${DB_DATABASE:-my_app_db}          # Creates this database on startup
+      MYSQL_USER: ${DB_USER:-my_app_user}                # Creates this user
+      MYSQL_PASSWORD: ${DB_PASSWORD:-my_app_password}    # Sets the password for the created user
+    ports:
+      # Optionally expose MySQL port to host for external tools (e.g., MySQL Workbench)
+      # Be careful with this in production.
+      - "33060:3306" # Map port 33060 on your host to port 3306 in the MySQL container
+    volumes:
+      - mysql_data:/var/lib/mysql # Persists MySQL data even if the container is removed
+      # To initialize your database with setup.sql:
+      - ./db/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+    command: --default-authentication-plugin=mysql_native_password # Often needed for older PHP clients
+
+volumes:
+  mysql_data: # Defines a named volume for persistent MySQL data
