@@ -24,7 +24,8 @@ WORKDIR /var/www/html
 # Copy the contents of the 'modular_system' directory
 # from your project into the web root in the container.
 # Also, set the correct ownership for Apache.
-COPY --chown=www-data:www-data ./modular_system/ .
+COPY  ./modular_system/ .
+# --chown=www-data:www-data ./modular_system/ .
 
 # Ensure mod_rewrite is enabled if you use .htaccess with RewriteRules.
 RUN a2enmod rewrite

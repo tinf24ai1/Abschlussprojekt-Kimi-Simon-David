@@ -61,6 +61,15 @@
             color: white;
             padding: 8px 12px;
         }
+        .warning-notice {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border: 1px solid #ffeeba;
+            border-radius: 4px;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -74,28 +83,73 @@
             <h1>Create New Module/Tracker</h1>
             <p>Define the structure for your new module. This will generate a configuration file and a SQL `CREATE TABLE` statement.</p>
 
+            <?php
+            // Display errors or success messages from generate_module.php
+            if (session_status() == PHP_SESSION_NONE) { // Ensure session is started
+                session_start();
+            }
+            if (isset($_SESSION['generate_module_errors'])) {
+                echo '<div class="flash-message error"><strong>Errors:</strong><ul>';
+                foreach ($_SESSION['generate_module_errors'] as $error) {
+                    echo '<li>' . htmlspecialchars($error) . '</li>';
+                }
+                echo '</ul></div>';
+                if(isset($_SESSION['generated_php_config'])) {
+                    echo '<h3>Generated PHP Config (Copy if file write failed):</h3>';
+                    echo '<pre style="background:#f0f0f0; padding:10px; border:1px solid #ccc; white-space:pre-wrap; word-wrap:break-word;"><code>' . htmlspecialchars($_SESSION['generated_php_config']) . '</code></pre>';
+                }
+                 if(isset($_SESSION['generated_sql_on_error'])) {
+                    echo '<h3>Generated SQL (Copy if file write failed or for manual execution):</h3>';
+                    echo '<pre style="background:#f0f0f0; padding:10px; border:1px solid #ccc; white-space:pre-wrap; word-wrap:break-word;"><code>' . htmlspecialchars($_SESSION['generated_sql_on_error']) . '</code></pre>';
+                }
+                unset($_SESSION['generate_module_errors'], $_SESSION['generated_php_config'], $_SESSION['generated_sql_on_error'], $_SESSION['generate_module_old_input']);
+            }
+
+            if (isset($_SESSION['generate_module_success'])) {
+                echo '<div class="flash-message success">' . $_SESSION['generate_module_success'] . '</div>';
+                if (isset($_SESSION['generated_sql'])) {
+                    echo '<h3>Generated SQL `CREATE TABLE` Statement:</h3>';
+                    if (isset($_SESSION['sql_execution_status']) && $_SESSION['sql_execution_status'] === 'success') {
+                        echo '<p style="color:green; font-weight:bold;">The following SQL was also executed successfully against the database.</p>';
+                    } elseif (isset($_SESSION['sql_execution_status']) && $_SESSION['sql_execution_status'] === 'skipped') {
+                         echo '<p style="color:orange; font-weight:bold;">Automatic SQL execution was skipped (option not checked).</p>';
+                    } elseif (isset($_SESSION['sql_execution_error'])) {
+                        echo '<p style="color:red; font-weight:bold;">An error occurred trying to execute the SQL automatically: ' . htmlspecialchars($_SESSION['sql_execution_error']) . '</p>';
+                        echo '<p>Please review and run this SQL in your database management tool (e.g., phpMyAdmin) to create the necessary table for your new module:</p>';
+                    } else {
+                         echo '<p>Please review and run this SQL in your database management tool (e.g., phpMyAdmin) to create the necessary table for your new module:</p>';
+                    }
+                    echo '<pre style="background:#f0f0f0; padding:10px; border:1px solid #ccc; white-space:pre-wrap; word-wrap:break-word;"><code>' . htmlspecialchars($_SESSION['generated_sql']) . '</code></pre>';
+                    unset($_SESSION['generated_sql'], $_SESSION['sql_execution_status'], $_SESSION['sql_execution_error']);
+                }
+                unset($_SESSION['generate_module_success']);
+            }
+            $oldInput = $_SESSION['generate_module_old_input'] ?? [];
+            unset($_SESSION['generate_module_old_input']); // Clear after use
+            ?>
+
             <form action="generate_module.php" method="POST" id="createModuleForm">
 
                 <div class="form-section">
                     <h2>Module Details</h2>
                     <div class="form-group">
                         <label for="module_name_display">Module Display Name <span class="required">*</span></label>
-                        <input type="text" id="module_name_display" name="module_name_display" placeholder="e.g., My Project Tasks" required>
+                        <input type="text" id="module_name_display" name="module_name_display" placeholder="e.g., My Project Tasks" value="<?php echo htmlspecialchars($oldInput['module_name_display'] ?? ''); ?>" required>
                         <small>User-friendly name that will appear in titles.</small>
                     </div>
                     <div class="form-group">
                         <label for="module_identifier">Module Identifier <span class="required">*</span></label>
-                        <input type="text" id="module_identifier" name="module_identifier" placeholder="e.g., my_project_tasks" required pattern="[a-z0-9_]+" title="Lowercase letters, numbers, and underscores only.">
+                        <input type="text" id="module_identifier" name="module_identifier" placeholder="e.g., my_project_tasks" value="<?php echo htmlspecialchars($oldInput['module_identifier'] ?? ''); ?>" required pattern="[a-z0-9_]+" title="Lowercase letters, numbers, and underscores only.">
                         <small>Used for filenames (config_MODULE_IDENTIFIER.php) and internal references. Lowercase letters, numbers, and underscores only.</small>
                     </div>
                     <div class="form-group">
                         <label for="table_name">Database Table Name <span class="required">*</span></label>
-                        <input type="text" id="table_name" name="table_name" placeholder="e.g., project_tasks" required pattern="[a-zA-Z0-9_]+" title="Letters, numbers, and underscores only.">
+                        <input type="text" id="table_name" name="table_name" placeholder="e.g., project_tasks" value="<?php echo htmlspecialchars($oldInput['table_name'] ?? ''); ?>" required pattern="[a-zA-Z0-9_]+" title="Letters, numbers, and underscores only.">
                         <small>The actual name of the SQL table that will be created/used.</small>
                     </div>
                     <div class="form-group">
                         <label for="primary_key">Primary Key Field Name <span class="required">*</span></label>
-                        <input type="text" id="primary_key" name="primary_key" value="id" required pattern="[a-zA-Z0-9_]+" title="Letters, numbers, and underscores only.">
+                        <input type="text" id="primary_key" name="primary_key" value="<?php echo htmlspecialchars($oldInput['primary_key'] ?? 'id'); ?>" required pattern="[a-zA-Z0-9_]+" title="Letters, numbers, and underscores only.">
                         <small>The name of the auto-incrementing primary key column (e.g., id, task_id).</small>
                     </div>
                 </div>
@@ -103,7 +157,19 @@
                 <div class="form-section">
                     <h2>Define Fields</h2>
                     <div id="fields-container">
-                        </div>
+                        <?php
+                        // Repopulate fields if there was an error and old input exists
+                        if (!empty($oldInput['fields']) && is_array($oldInput['fields'])) {
+                            foreach ($oldInput['fields'] as $index => $fieldData) {
+                                // This part is complex to re-render dynamically with PHP here.
+                                // The JS will handle adding initial fields.
+                                // For a full server-side re-population of dynamic fields,
+                                // you'd need to pass this data to JS or have a more complex PHP render loop.
+                                // For now, the JS `addField()` will run on load.
+                            }
+                        }
+                        ?>
+                    </div>
                     <button type="button" id="addFieldBtn" class="button add-button">Add Field</button>
                 </div>
 
@@ -111,20 +177,34 @@
                     <h2>Module Settings (Optional)</h2>
                     <div class="form-group">
                         <label for="default_sort_column">Default Sort Column</label>
-                        <input type="text" id="default_sort_column" name="default_sort_column" placeholder="e.g., created_at (must be one of your defined fields)">
+                        <input type="text" id="default_sort_column" name="default_sort_column" value="<?php echo htmlspecialchars($oldInput['default_sort_column'] ?? ''); ?>" placeholder="e.g., created_at (must be one of your defined fields)">
                     </div>
                     <div class="form-group">
                         <label for="default_sort_direction">Default Sort Direction</label>
                         <select id="default_sort_direction" name="default_sort_direction">
-                            <option value="ASC">Ascending (ASC)</option>
-                            <option value="DESC" selected>Descending (DESC)</option>
+                            <option value="ASC" <?php echo (($oldInput['default_sort_direction'] ?? 'DESC') === 'ASC' ? 'selected' : ''); ?>>Ascending (ASC)</option>
+                            <option value="DESC" <?php echo (($oldInput['default_sort_direction'] ?? 'DESC') === 'DESC' ? 'selected' : ''); ?>>Descending (DESC)</option>
                         </select>
                     </div>
                      <div class="form-group">
                         <label for="records_per_page">Records Per Page</label>
-                        <input type="number" id="records_per_page" name="records_per_page" value="10" min="1">
+                        <input type="number" id="records_per_page" name="records_per_page" value="<?php echo htmlspecialchars($oldInput['records_per_page'] ?? 10); ?>" min="1">
                     </div>
                 </div>
+
+                <div class="form-section">
+                    <h2>Database Options</h2>
+                    <div class="form-group">
+                        <input type="checkbox" name="auto_create_table" id="auto_create_table" value="1" <?php echo !empty($oldInput['auto_create_table']) ? 'checked' : ''; ?>>
+                        <label for="auto_create_table" class="inline-label">Attempt to create database table automatically?</label>
+                        <div class="warning-notice">
+                            <strong>Warning:</strong> Enabling this will attempt to execute `CREATE TABLE` and `ALTER TABLE` SQL commands directly on your database.
+                            Ensure the database user has sufficient permissions (CREATE, ALTER). This is powerful and could lead to errors or overwrite existing structures if not used carefully.
+                            It is recommended to back up your database before proceeding if unsure.
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="form-actions">
                     <button type="submit" class="button save">Generate Module Files</button>
@@ -155,13 +235,13 @@
                     <option value="datetime">Date & Time (DATETIME)</option>
                     <option value="select">Select Dropdown</option>
                     <option value="foreign_key">Foreign Key (Relational Select)</option>
-                    </select>
+                </select>
             </div>
 
             <div class="field-options" style="display:none;">
                 <h4>Select Options</h4>
                 <div class="options-list">
-                    </div>
+                </div>
                 <button type="button" class="add-option-btn button add-button" style="font-size:0.9em; padding: 5px 8px;">Add Option</button>
                 <div class="form-group" style="margin-top:10px;">
                      <label>Placeholder Text (Optional)</label>
@@ -214,69 +294,124 @@
     </template>
 
     <script>
+        // JavaScript remains the same as your previous version for field adding/handling
+        // (The JS for adding fields, options, handling field type changes, and auto-populating identifiers)
         document.addEventListener('DOMContentLoaded', function () {
             const fieldsContainer = document.getElementById('fields-container');
             const addFieldBtn = document.getElementById('addFieldBtn');
             const fieldTemplate = document.getElementById('fieldTemplate');
             const selectOptionTemplate = document.getElementById('selectOptionTemplate');
             let fieldIndex = 0;
+            const initialFieldsData = <?php echo json_encode($oldInput['fields'] ?? []); ?>;
 
-            function addField() {
+
+            function createFieldElement(fieldData = {}, existingIndex = null) {
                 const newField = fieldTemplate.content.cloneNode(true);
-                
-                // Update INDEX placeholders in names and ids
+                const currentIndex = existingIndex !== null ? existingIndex : fieldIndex;
+
                 newField.querySelectorAll('[name*="[INDEX]"]').forEach(el => {
-                    el.name = el.name.replace('[INDEX]', `[${fieldIndex}]`);
+                    el.name = el.name.replace('[INDEX]', `[${currentIndex}]`);
                 });
                 newField.querySelectorAll('[id*="_INDEX"]').forEach(el => {
-                    el.id = el.id.replace('_INDEX', `_${fieldIndex}`);
+                    const newId = el.id.replace('_INDEX', `_${currentIndex}`);
+                    el.id = newId;
                     if (el.nextElementSibling && el.nextElementSibling.tagName === 'LABEL') {
-                         el.nextElementSibling.setAttribute('for', el.id);
+                         el.nextElementSibling.setAttribute('for', newId);
                     }
                 });
-                
-                const fieldTypeSelect = newField.querySelector('.field-type-select');
+
+                const fieldNameInput = newField.querySelector('input[name*="[name]"]');
+                const fieldLabelInput = newField.querySelector('input[name*="[label]"]');
+                const fieldTypeSelect = newField.querySelector('select[name*="[type]"]');
+                const listDisplayCheckbox = newField.querySelector('input[name*="[list_display]"]');
+                const formDisplayCheckbox = newField.querySelector('input[name*="[form_display]"]');
+                const requiredCheckbox = newField.querySelector('input[name*="[required]"]');
+                const searchableCheckbox = newField.querySelector('input[name*="[searchable]"]');
+
                 const fieldOptionsDiv = newField.querySelector('.field-options');
                 const fkOptionsDiv = newField.querySelector('.fk-options');
                 const addOptionBtn = newField.querySelector('.add-option-btn');
+                const optionsListDiv = fieldOptionsDiv.querySelector('.options-list');
 
-                fieldTypeSelect.addEventListener('change', function () {
-                    fieldOptionsDiv.style.display = (this.value === 'select') ? 'block' : 'none';
-                    fkOptionsDiv.style.display = (this.value === 'foreign_key') ? 'block' : 'none';
-                    
-                    // Set required for fk fields if visible
+                // Populate with existing data if provided (for re-rendering on error)
+                if (fieldData.name) fieldNameInput.value = fieldData.name;
+                if (fieldData.label) fieldLabelInput.value = fieldData.label;
+                if (fieldData.type) fieldTypeSelect.value = fieldData.type;
+                if (fieldData.list_display) listDisplayCheckbox.checked = true;
+                // form_display is checked by default in template, uncheck if explicitly false
+                if (fieldData.hasOwnProperty('form_display') && !fieldData.form_display) formDisplayCheckbox.checked = false; else if (!fieldData.hasOwnProperty('form_display')) formDisplayCheckbox.checked = true; // Default from template
+                if (fieldData.required) requiredCheckbox.checked = true;
+                if (fieldData.searchable) searchableCheckbox.checked = true;
+
+
+                function toggleOptionVisibility() {
+                    fieldOptionsDiv.style.display = (fieldTypeSelect.value === 'select') ? 'block' : 'none';
+                    fkOptionsDiv.style.display = (fieldTypeSelect.value === 'foreign_key') ? 'block' : 'none';
                     fkOptionsDiv.querySelectorAll('input').forEach(input => {
-                        input.required = (this.value === 'foreign_key');
+                        input.required = (fieldTypeSelect.value === 'foreign_key');
                     });
-                });
+                }
+                fieldTypeSelect.addEventListener('change', toggleOptionVisibility);
+                toggleOptionVisibility(); // Initial check
 
-                let currentFieldIndex = fieldIndex; // Closure for option template
+                if (fieldData.type === 'select') {
+                    if (fieldData.select_placeholder) newField.querySelector('input[name*="[select_placeholder]"]').value = fieldData.select_placeholder;
+                    if (fieldData.options_key && fieldData.options_key.length) {
+                        for (let i = 0; i < fieldData.options_key.length; i++) {
+                            addOptionPairElement(optionsListDiv, currentIndex, fieldData.options_key[i], fieldData.options_value[i]);
+                        }
+                    }
+                } else if (fieldData.type === 'foreign_key') {
+                    if (fieldData.fk_lookup_table) newField.querySelector('input[name*="[fk_lookup_table]"]').value = fieldData.fk_lookup_table;
+                    if (fieldData.fk_lookup_id_column) newField.querySelector('input[name*="[fk_lookup_id_column]"]').value = fieldData.fk_lookup_id_column;
+                    if (fieldData.fk_lookup_value_column) newField.querySelector('input[name*="[fk_lookup_value_column]"]').value = fieldData.fk_lookup_value_column;
+                    if (fieldData.fk_placeholder) newField.querySelector('input[name*="[fk_placeholder]"]').value = fieldData.fk_placeholder;
+                }
+
+
                 addOptionBtn.addEventListener('click', function () {
-                    const newOptionPair = selectOptionTemplate.content.cloneNode(true);
-                    newOptionPair.querySelectorAll('[name*="[FIELD_INDEX]"]').forEach(el => {
-                         el.name = el.name.replace('[FIELD_INDEX]', `[${currentFieldIndex}]`);
-                    });
-                    fieldOptionsDiv.querySelector('.options-list').appendChild(newOptionPair);
+                    addOptionPairElement(optionsListDiv, currentIndex);
                 });
 
                 fieldsContainer.appendChild(newField);
-                fieldIndex++;
+                if (existingIndex === null) {
+                    fieldIndex++;
+                }
             }
 
-            addFieldBtn.addEventListener('click', addField);
+            function addOptionPairElement(parentDiv, currentFieldIdx, key = '', val = '') {
+                const newOptionPair = selectOptionTemplate.content.cloneNode(true);
+                newOptionPair.querySelectorAll('[name*="[FIELD_INDEX]"]').forEach(el => {
+                     el.name = el.name.replace('[FIELD_INDEX]', `[${currentFieldIdx}]`);
+                });
+                newOptionPair.querySelector('input[name*="[options_key]"]').value = key;
+                newOptionPair.querySelector('input[name*="[options_value]"]').value = val;
+                parentDiv.appendChild(newOptionPair);
+            }
 
-            // Add one field by default
-            addField(); 
-            
-            // Auto-generate module_identifier and table_name from module_name_display
+
+            // Repopulate fields from old input if available
+            if (initialFieldsData && initialFieldsData.length > 0) {
+                initialFieldsData.forEach((field, idx) => {
+                    createFieldElement(field, idx);
+                });
+                fieldIndex = initialFieldsData.length; // Ensure new fields get correct index
+            } else {
+                 // Add one field by default if no old input
+                createFieldElement();
+            }
+
+
+            addFieldBtn.addEventListener('click', () => createFieldElement());
+
             const moduleNameDisplayInput = document.getElementById('module_name_display');
             const moduleIdentifierInput = document.getElementById('module_identifier');
             const tableNameInput = document.getElementById('table_name');
 
             moduleNameDisplayInput.addEventListener('input', function() {
                 let baseName = this.value.toLowerCase()
-                                      .replace(/\s+/g, '_') // Replace spaces with underscores
-                                      .replace(/[^a-z0-9_]/g, ''); // Remove invalid chars
+                                      .replace(/\s+/g, '_')
+                                      .replace(/[^a-z0-9_]/g, '');
                 if (!moduleIdentifierInput.value || moduleIdentifierInput.dataset.autoPopulated !== 'false') {
                     moduleIdentifierInput.value = baseName;
                     moduleIdentifierInput.dataset.autoPopulated = 'true';
@@ -288,7 +423,6 @@
             });
             moduleIdentifierInput.addEventListener('input', () => { moduleIdentifierInput.dataset.autoPopulated = 'false'; });
             tableNameInput.addEventListener('input', () => { tableNameInput.dataset.autoPopulated = 'false'; });
-
         });
     </script>
      <footer>
@@ -296,4 +430,5 @@
     </footer>
 </body>
 </html>
+
 
