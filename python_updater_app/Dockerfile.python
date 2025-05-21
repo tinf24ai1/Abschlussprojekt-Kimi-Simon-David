@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY update_db.py .
+
+
+# Install Python dependencies
+RUN pip install --no-cache-dir mysql-connector-python
+
+# Default command to run when the container starts via `docker-compose run python_updater`
+CMD ["python", "update_db.py"]
