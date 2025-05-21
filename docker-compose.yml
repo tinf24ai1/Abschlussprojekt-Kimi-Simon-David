@@ -8,18 +8,16 @@ services:
     ports:
       - "8080:80" # Access web app via http://localhost:8080
     environment:
-      DB_HOST: db_mysql # Service name of the MySQL container
+      DB_HOST: db_mysql 
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
       DB_NAME: ${DB_NAME}
-      DISPLAY_TABLE_NAME: ${DISPLAY_TABLE_NAME:-books} # Default to 'books' if not set in .env
-      # PHP specific environment variables can be added here
-      # APACHE_DOCUMENT_ROOT: /var/www/html/public # If your app has a public subdirectory
+      DISPLAY_TABLE_NAME: ${DISPLAY_TABLE_NAME:-books} # relikt of old version 
     volumes:
-      - ./php_app:/var/www/html # Mount for live development changes in php_app
+      - ./php_app:/var/www/html 
     depends_on:
       db_mysql:
-        condition: service_healthy # Wait for MySQL to be ready
+        condition: service_healthy 
     restart: unless-stopped
 
   python_updater:
@@ -44,19 +42,19 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME} # Automatically creates this database
+      MYSQL_DATABASE: ${DB_NAME} 
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASS}
     ports:
-      - "${MYSQL_PORT_HOST:-33066}:3306" # Expose MySQL port to host (optional)
+      - "${MYSQL_PORT_HOST:-33066}:3306" 
     volumes:
-      - mysql_data:/var/lib/mysql # Persist MySQL data
+      - mysql_data:/var/lib/mysql 
     healthcheck: # Checks if MySQL is ready to accept connections
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u${DB_USER}", "-p${DB_PASS}"]
       interval: 10s
       timeout: 10s
       retries: 10
-      start_period: 30s # Give MySQL some time to initialize
+      start_period: 30s 
 
 volumes:
-  mysql_data: # Defines the named volume for data persistence
+  mysql_data: 
