@@ -2,14 +2,14 @@
 body {
     font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
     margin: 0;
-    background-color: #f0e6ff; /* Light lavender */
+    background-color: #f0e6ff; /* Light lavender background */ 
     color: #3d2c5a; /* Deep purple */
     line-height: 1.7;
     font-size: 16px;
 }
 
 header {
-    background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Peachy gradient */
+    background: #e75480; /* Hot pink background */ 
     color: white;
     padding: 20px 0;
     text-align: center;
@@ -29,14 +29,15 @@ main.container {
     max-width: 1200px;
     margin: 30px auto;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: #e75480; 
     border-radius: 15px;
-    box-shadow: 0 0 20px rgba(61, 44, 90, 0.2);
+    box-shadow: 0 0 20px #b42d5a33; 
 }
 
-/* Sections */
+
+
 .section {
-    background-color: #fff;
+    background-color: pink;
     padding: 25px;
     margin-bottom: 30px;
     border-radius: 10px;
@@ -50,7 +51,7 @@ main.container {
 }
 
 .section h2 {
-    color: #ff7e5f; /* Peachy orange for headings */
+    color: navy; 
     border-bottom: 3px dotted #feb47b;
     padding-bottom: 10px;
     margin-top: 0;
@@ -223,19 +224,6 @@ a:hover {
     display: inline-block; /* Make it a button-like element */
 }
 
-/* Footer */
-footer {
-    text-align: center;
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #3d2c5a;
-    color: #f0e6ff;
-    border-top: 5px dashed #fff;
-}
-footer p {
-    margin: 0;
-    font-size: 0.9em;
-}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

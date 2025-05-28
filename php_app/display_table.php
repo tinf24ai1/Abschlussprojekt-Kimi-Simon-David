@@ -160,9 +160,6 @@ if ($pdo && $selectedTableName) {
              <p>Table data cannot be displayed.</p>
         <?php endif; ?>
     </main>
-    <footer>
-        <p>&copy; <?php echo date("Y"); ?> Basic DB Solutions.</p>
-    </footer>
 </body>
 </html>
 

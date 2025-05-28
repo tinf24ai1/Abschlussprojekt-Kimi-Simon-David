@@ -69,6 +69,7 @@ try {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <script src="./oneko.js"></script>
     <header>
         <h1>DB Manager Basic ⚙️</h1>
     </header>
@@ -120,10 +121,6 @@ try {
             </form>
         </div>
     </main>
-
-    <footer>
-        <p>&copy; <?php echo date("Y"); ?> Basic DB Solutions.</p>
-    </footer>
 </body>
 </html>
 
