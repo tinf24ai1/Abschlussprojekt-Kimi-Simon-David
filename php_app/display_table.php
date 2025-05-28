@@ -94,6 +94,7 @@ if ($pdo && $selectedTableName) {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <script src="./oneko.js"></script>
     <header>
         <h1>Viewing Table: <?php echo htmlspecialchars($selectedTableName ?? 'Error'); ?> 🧐</h1>
     </header>
