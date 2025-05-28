@@ -1,6 +1,6 @@
 /* General Body & Typography */
 body {
-    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif; /* Let's get quirky! */
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
     margin: 0;
     background-color: #f0e6ff; /* Light lavender */
     color: #3d2c5a; /* Deep purple */
@@ -29,7 +29,7 @@ main.container {
     max-width: 1200px;
     margin: 30px auto;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent white */
+    background-color: rgba(255, 255, 255, 0.8);
     border-radius: 15px;
     box-shadow: 0 0 20px rgba(61, 44, 90, 0.2);
 }
@@ -80,81 +80,67 @@ main.container {
 
 /* Tables */
 .table-responsive {
-    overflow-x: auto; /* For very wide tables */
+    overflow-x: auto;
 }
 table {
     width: 100%;
-    border-collapse: separate; /* For rounded corners on cells */
+    border-collapse: separate;
     border-spacing: 0;
     margin-top: 20px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    border: 1px solid #ddd; /* Outer border for the table */
-    border-radius: 8px; /* Rounded corners for the table */
-    overflow: hidden; /* To make border-radius work with cells */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
 }
 th, td {
-    border-bottom: 1px solid #e0cffc; /* Lighter lavender for inner borders */
+    border-bottom: 1px solid #e0cffc;
     padding: 12px 15px;
     text-align: left;
     vertical-align: middle;
 }
 th {
-    background-color: #e0cffc; /* Lighter lavender for headers */
+    background-color: #e0cffc;
     color: #3d2c5a;
     font-weight: bold;
     font-size: 1.1em;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
-th small {
-    font-size: 0.8em;
-    font-weight: normal;
-    text-transform: none;
-    color: #5e4a80;
-}
 tr:nth-child(even) td {
-    background-color: #f9f5ff; /* Very light lavender for even rows */
+    background-color: #f9f5ff;
 }
 tr:hover td {
-    background-color: #e8dfff; /* Slightly darker on hover */
-    cursor: default;
+    background-color: #e8dfff;
 }
 td {
     font-size: 0.95em;
 }
 
+/* Forms */
 .styled-form .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* Reduced margin */
     display: flex;
     flex-wrap: wrap;
     align-items: center;
 }
 .styled-form label {
     display: inline-block;
-    /* width: 180px; */ /* Adjusted for flex */
     margin-right: 10px;
     font-weight: bold;
     color: #5e4a80;
-    flex-basis: 180px; /* Give label a base width */
+    flex-basis: 150px; /* Adjusted width */
     flex-grow: 0;
 }
 .styled-form input[type="text"],
-.styled-form input[type="number"],
-.styled-form input[type="date"],
-.styled-form input[type="datetime-local"],
 .styled-form select {
-    padding: 10px;
+    padding: 8px; /* Slightly smaller padding */
     border: 2px dashed #b19cd9;
     border-radius: 5px;
     background-color: #fff;
     color: #3d2c5a;
-    flex-grow: 1; /* Allow input to take remaining space */
-    min-width: 200px; /* Minimum width for inputs */
+    flex-grow: 1;
+    min-width: 180px; /* Adjusted min-width */
     box-sizing: border-box;
-}
-.styled-form input[type="checkbox"] {
-    margin-left: 10px;
-    transform: scale(1.3);
 }
 .styled-form input:focus, .styled-form select:focus {
     border-style: solid;
@@ -165,17 +151,16 @@ td {
 .styled-form small {
     display: block;
     width: 100%;
-    margin-left: 190px; /* Align with inputs */
+    margin-left: 160px; /* Align with inputs */
     font-size: 0.85em;
     color: #777;
 }
-
 
 /* Buttons */
 .action-btn, .action-btn-secondary {
     padding: 12px 25px;
     border: none;
-    border-radius: 25px; /* Pill shape */
+    border-radius: 25px;
     cursor: pointer;
     font-weight: bold;
     text-transform: uppercase;
@@ -184,6 +169,9 @@ td {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     margin-top: 10px;
     margin-right: 10px;
+    text-decoration: none; /* For links styled as buttons */
+    display: inline-block; /* For links */
+    text-align: center;
 }
 .action-btn {
     background: linear-gradient(135deg, #ff7e5f, #feb47b);
@@ -204,7 +192,7 @@ td {
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
-
+/* Links */
 a {
     color: #ff7e5f;
     text-decoration: none;
@@ -228,7 +216,11 @@ a:hover {
 .table-list a.table-link:hover {
     background-color: #e8dfff;
     transform: translateX(5px);
-    text-decoration: none; /* Override general hover for this specific link */
+    text-decoration: none;
+}
+.back-link {
+    margin-bottom: 20px;
+    display: inline-block; /* Make it a button-like element */
 }
 
 /* Footer */
@@ -247,11 +239,8 @@ footer p {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    header h1 {
-        font-size: 2em;
-    }
     .styled-form label {
-        flex-basis: 100%; /* Labels take full width on small screens */
+        flex-basis: 100%;
         margin-bottom: 5px;
     }
     .styled-form input, .styled-form select {
@@ -259,18 +248,6 @@ footer p {
     }
     .styled-form small {
         margin-left: 0;
-    }
-    .container {
-        width: 95%;
-        padding: 10px;
-    }
-    .section {
-        padding: 15px;
-        box-shadow: 3px 3px 0px #b19cd9;
-    }
-     .section:hover {
-        transform: translateY(-3px) translateX(-3px);
-        box-shadow: 6px 6px 0px #967bb6;
     }
 }
 
