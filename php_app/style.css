@@ -1,0 +1,276 @@
+/* General Body & Typography */
+body {
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif; /* Let's get quirky! */
+    margin: 0;
+    background-color: #f0e6ff; /* Light lavender */
+    color: #3d2c5a; /* Deep purple */
+    line-height: 1.7;
+    font-size: 16px;
+}
+
+header {
+    background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Peachy gradient */
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    border-bottom: 5px dashed #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.8em;
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.4);
+    letter-spacing: 2px;
+}
+
+main.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent white */
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(61, 44, 90, 0.2);
+}
+
+/* Sections */
+.section {
+    background-color: #fff;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    border: 2px solid #b19cd9; /* Medium purple border */
+    box-shadow: 5px 5px 0px #b19cd9; /* Drop shadow effect */
+    transition: transform 0.2s ease-in-out;
+}
+.section:hover {
+    transform: translateY(-5px) translateX(-5px);
+    box-shadow: 10px 10px 0px #967bb6; /* Darker purple on hover */
+}
+
+.section h2 {
+    color: #ff7e5f; /* Peachy orange for headings */
+    border-bottom: 3px dotted #feb47b;
+    padding-bottom: 10px;
+    margin-top: 0;
+    font-size: 1.8em;
+}
+
+/* Messages */
+.message {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    border-width: 2px;
+    border-style: solid;
+}
+.success {
+    background-color: #d1f7c4; /* Mint green */
+    color: #2a7217;
+    border-color: #a1e08f;
+}
+.error {
+    background-color: #ffd1d1; /* Light pink */
+    color: #b22222; /* Firebrick */
+    border-color: #ffaaaa;
+}
+
+/* Tables */
+.table-responsive {
+    overflow-x: auto; /* For very wide tables */
+}
+table {
+    width: 100%;
+    border-collapse: separate; /* For rounded corners on cells */
+    border-spacing: 0;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 1px solid #ddd; /* Outer border for the table */
+    border-radius: 8px; /* Rounded corners for the table */
+    overflow: hidden; /* To make border-radius work with cells */
+}
+th, td {
+    border-bottom: 1px solid #e0cffc; /* Lighter lavender for inner borders */
+    padding: 12px 15px;
+    text-align: left;
+    vertical-align: middle;
+}
+th {
+    background-color: #e0cffc; /* Lighter lavender for headers */
+    color: #3d2c5a;
+    font-weight: bold;
+    font-size: 1.1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+th small {
+    font-size: 0.8em;
+    font-weight: normal;
+    text-transform: none;
+    color: #5e4a80;
+}
+tr:nth-child(even) td {
+    background-color: #f9f5ff; /* Very light lavender for even rows */
+}
+tr:hover td {
+    background-color: #e8dfff; /* Slightly darker on hover */
+    cursor: default;
+}
+td {
+    font-size: 0.95em;
+}
+
+.styled-form .form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.styled-form label {
+    display: inline-block;
+    /* width: 180px; */ /* Adjusted for flex */
+    margin-right: 10px;
+    font-weight: bold;
+    color: #5e4a80;
+    flex-basis: 180px; /* Give label a base width */
+    flex-grow: 0;
+}
+.styled-form input[type="text"],
+.styled-form input[type="number"],
+.styled-form input[type="date"],
+.styled-form input[type="datetime-local"],
+.styled-form select {
+    padding: 10px;
+    border: 2px dashed #b19cd9;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #3d2c5a;
+    flex-grow: 1; /* Allow input to take remaining space */
+    min-width: 200px; /* Minimum width for inputs */
+    box-sizing: border-box;
+}
+.styled-form input[type="checkbox"] {
+    margin-left: 10px;
+    transform: scale(1.3);
+}
+.styled-form input:focus, .styled-form select:focus {
+    border-style: solid;
+    border-color: #ff7e5f;
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 126, 95, 0.5);
+}
+.styled-form small {
+    display: block;
+    width: 100%;
+    margin-left: 190px; /* Align with inputs */
+    font-size: 0.85em;
+    color: #777;
+}
+
+
+/* Buttons */
+.action-btn, .action-btn-secondary {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px; /* Pill shape */
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    margin-top: 10px;
+    margin-right: 10px;
+}
+.action-btn {
+    background: linear-gradient(135deg, #ff7e5f, #feb47b);
+    color: white;
+}
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    filter: brightness(1.1);
+}
+.action-btn-secondary {
+    background-color: #b19cd9;
+    color: white;
+}
+.action-btn-secondary:hover {
+    background-color: #967bb6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+
+a {
+    color: #ff7e5f;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+a:hover {
+    color: #feb47b;
+    text-decoration: underline wavy;
+}
+.table-list { list-style-type: none; padding: 0; }
+.table-list li { margin-bottom: 10px; }
+.table-list a.table-link {
+    display: block;
+    padding: 10px 15px;
+    background-color: #f9f5ff;
+    border: 1px solid #e0cffc;
+    border-radius: 5px;
+    font-size: 1.2em;
+    transition: background-color 0.2s, transform 0.2s;
+}
+.table-list a.table-link:hover {
+    background-color: #e8dfff;
+    transform: translateX(5px);
+    text-decoration: none; /* Override general hover for this specific link */
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #3d2c5a;
+    color: #f0e6ff;
+    border-top: 5px dashed #fff;
+}
+footer p {
+    margin: 0;
+    font-size: 0.9em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2em;
+    }
+    .styled-form label {
+        flex-basis: 100%; /* Labels take full width on small screens */
+        margin-bottom: 5px;
+    }
+    .styled-form input, .styled-form select {
+        width: 100%;
+    }
+    .styled-form small {
+        margin-left: 0;
+    }
+    .container {
+        width: 95%;
+        padding: 10px;
+    }
+    .section {
+        padding: 15px;
+        box-shadow: 3px 3px 0px #b19cd9;
+    }
+     .section:hover {
+        transform: translateY(-3px) translateX(-3px);
+        box-shadow: 6px 6px 0px #967bb6;
+    }
+}
+
