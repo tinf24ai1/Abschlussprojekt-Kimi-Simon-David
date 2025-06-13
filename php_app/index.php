@@ -70,9 +70,15 @@ try {
 </head>
 <body>
     <script src="./oneko.js"></script>
+    <script src="./styleswitcher.js"></script>
     <header>
         <h1>DB Manager Basic ⚙️</h1>
     </header>
+    <select id="style-switcher">
+        <option value="style.css">Default Style</option>
+        <option value="dark.css">Dark Mode</option>
+        <option value="light.css">Light Mode</option>
+    </select>
 
     <main class="container">
         <?php if ($message): ?><div class="message success"><?php echo $message; ?></div><?php endif; ?>
