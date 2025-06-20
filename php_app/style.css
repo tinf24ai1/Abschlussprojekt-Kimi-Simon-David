@@ -225,6 +225,36 @@ a:hover {
 }
 
 
+/* Theme Selector */
+.theme-selector {
+    margin-top: 10px;
+}
+
+.theme-dropdown {
+    padding: 8px 15px;
+    border: 2px solid #fff;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.theme-dropdown:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.theme-dropdown:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+.theme-dropdown option {
+    background-color: #fff;
+    color: #333;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .styled-form label {

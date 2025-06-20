@@ -20,22 +20,6 @@ services:
         condition: service_healthy 
     restart: unless-stopped
 
-  python_updater:
-    build:
-      context: ./python_updater_app
-      dockerfile: Dockerfile.python
-    environment:
-      DB_HOST: db_mysql
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASS}
-      DB_NAME: ${DB_NAME}
-      PYTHONUNBUFFERED: 1 # Ensures `print` statements and `input` prompts appear immediately
-    depends_on:
-      db_mysql:
-        condition: service_healthy
-    stdin_open: true  # Needed for interactive `input()`
-    tty: true         # Needed for interactive `input()`
-
   db_mysql:
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
