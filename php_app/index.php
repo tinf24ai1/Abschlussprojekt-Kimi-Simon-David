@@ -1,5 +1,5 @@
 <?php
-require_once 'db_config.php'; // Includes $pdo or dies
+require_once './include/db_config.php'; // Includes $pdo or dies
 
 $availableTables = [];
 $message = null;
@@ -63,18 +63,18 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DB Manager Basic</title>
-    <link rel="stylesheet" href="style.css" id="theme-link">
-    <script src="theme.js" defer></script>
+    <link rel="stylesheet" href="css/style.css" id="theme-link">
+    <script src="js/theme.js" defer></script>
 </head>
 <body>
-    <script src="./oneko.js"></script>
+    <script src="js/oneko/oneko.js"></script>
     <header>
         <h1>DB Manager Basic ⚙️</h1>
         <div class="theme-selector">
             <select id="theme-select" class="theme-dropdown">
-                <option value="style.css">Standard-Theme</option>
-                <option value="light.css">Helles Theme</option>
-                <option value="dark.css">Dunkles Theme</option>
+                <option value="css/style.css">Standard-Theme</option>
+                <option value="css/light.css">Helles Theme</option>
+                <option value="css/dark.css">Dunkles Theme</option>
             </select>
         </div>
     </header>

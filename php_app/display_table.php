@@ -1,5 +1,5 @@
 <?php
-require_once 'db_config.php'; // Includes $pdo or dies
+require_once './include/db_config.php'; // Includes $pdo or dies
 
 $selectedTableName = null;
 $columnsInfo = []; // Will store full column info
@@ -91,9 +91,9 @@ if ($pdo && $selectedTableName) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabelle anzeigen: <?php echo htmlspecialchars($selectedTableName ?? 'Fehler'); ?></title>
-    <link rel="stylesheet" href="style.css" id="theme-link">
-    <script src="theme.js" defer></script>
-    <script src="table-features.js" defer></script>
+    <link rel="stylesheet" href="css/style.css" id="theme-link">
+    <script src="js/theme.js" defer></script>
+    <script src="js/table-features.js" defer></script>
     <style>
         /* Custom styles for date inputs */
         input[type="date"] {
@@ -104,7 +104,7 @@ if ($pdo && $selectedTableName) {
             cursor: pointer;
         }
         
-        /* Dark theme support for date inputs */
+        /* Dark theme support for date inputs, has to be here, it gets weird if not */
         @media (prefers-color-scheme: dark) {
             input[type="date"] {
                 background-color: #252525;
@@ -118,14 +118,14 @@ if ($pdo && $selectedTableName) {
     </style>
 </head>
 <body>
-    <script src="./oneko.js"></script>
+    <script src="js/oneko/oneko.js"></script>
     <header>
         <h1>Tabelle anzeigen: <?php echo htmlspecialchars($selectedTableName ?? 'Fehler'); ?> 🧐</h1>
         <div class="theme-selector">
             <select id="theme-select" class="theme-dropdown">
-                <option value="style.css">Standard-Theme</option>
-                <option value="light.css">Helles Theme</option>
-                <option value="dark.css">Dunkles Theme</option>
+                <option value="css/style.css">Standard-Theme</option>
+                <option value="css/light.css">Helles Theme</option>
+                <option value="css/dark.css">Dunkles Theme</option>
             </select>
         </div>
     </header>
