@@ -12,6 +12,7 @@ services:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
       DB_NAME: ${DB_NAME}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       DISPLAY_TABLE_NAME: ${DISPLAY_TABLE_NAME:-kauansalles_tabelle} # relikt of old version 
     volumes:
       - ./php_app:/var/www/html 

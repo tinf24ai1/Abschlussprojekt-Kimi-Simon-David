@@ -57,7 +57,7 @@ try {
 
             // Create the default admin user
             $adminUsername = 'admin';
-            $adminPassword = 'admin1'; // As requested
+            $adminPassword = getenv('ADMIN_PASSWORD') ?: 'admin1'; // Falls back to 'admin1' if env var not set
             $hashedPassword = password_hash($adminPassword, PASSWORD_DEFAULT);
             $adminRole = 'admin';
 

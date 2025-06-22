@@ -1,18 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
     const themeSelect = document.getElementById('theme-select');
     const themeLink = document.getElementById('theme-link');
-    
-    // Load saved theme preference from localStorage
-    const savedTheme = localStorage.getItem('selectedTheme');
-    if (savedTheme) {
-        themeLink.href = savedTheme;
-        themeSelect.value = savedTheme;
+
+    // If the theme selector or the theme link doesn't exist on this page, stop executing.
+    if (!themeSelect || !themeLink) {
+        return;
     }
 
-    // Handle theme changes
-    themeSelect.addEventListener('change', (e) => {
-        const selectedTheme = e.target.value;
+    const currentTheme = localStorage.getItem('theme');
+
+    // Set the dropdown to the saved theme on page load
+    if (currentTheme) {
+        themeLink.href = currentTheme;
+        themeSelect.value = currentTheme;
+    }
+
+    // Add event listener to change theme and save choice
+    themeSelect.addEventListener('change', () => {
+        const selectedTheme = themeSelect.value;
         themeLink.href = selectedTheme;
-        localStorage.setItem('selectedTheme', selectedTheme);
+        localStorage.setItem('theme', selectedTheme);
     });
 });
