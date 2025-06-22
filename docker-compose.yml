@@ -12,7 +12,7 @@ services:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
       DB_NAME: ${DB_NAME}
-      DISPLAY_TABLE_NAME: ${DISPLAY_TABLE_NAME:-books} # relikt of old version 
+      DISPLAY_TABLE_NAME: ${DISPLAY_TABLE_NAME:-kauansalles_tabelle} # relikt of old version 
     volumes:
       - ./php_app:/var/www/html 
     depends_on:
@@ -41,4 +41,4 @@ services:
       start_period: 30s 
 
 volumes:
-  mysql_data: 
+  mysql_data:

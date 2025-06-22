@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Database credentials from environment variables
 $host = getenv('DB_HOST');
-$dbname = getenv('DB_NAME');
+$dbname = getenv('DB_NAME'); 
 $user = getenv('DB_USER');
 $pass = getenv('DB_PASS');
 $charset = 'utf8mb4';

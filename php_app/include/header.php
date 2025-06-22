@@ -3,11 +3,11 @@
 // It also checks for an active session to conditionally display elements.
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($pageTitle ?? 'DB Manager'); ?></title>
+    <title><?php echo htmlspecialchars($pageTitle ?? 'KauansAllesDatenbank'); ?></title>
     <link rel="stylesheet" href="css/style.css" id="theme-link">
     <script src="js/theme.js" defer></script>
     <?php if(isset($_SESSION['user_id'])): // Only include these scripts for logged-in users ?>
@@ -19,7 +19,7 @@
 </head>
 <body>
     <header>
-        <h1><?php echo htmlspecialchars($pageTitle ?? 'DB Manager'); ?> ⚙️</h1>
+        <h1><?php echo htmlspecialchars($pageTitle ?? 'KauansAllesDatenbank'); ?> ⚙️</h1>
         <?php if(isset($_SESSION['user_id'])): ?>
             <div class="header-actions">
                 <span class="user-info">(Angemeldet als: <?php echo htmlspecialchars($_SESSION['username']); ?>)</span>

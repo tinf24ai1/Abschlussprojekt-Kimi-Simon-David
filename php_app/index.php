@@ -77,7 +77,7 @@ try {
 }
 
 // --- Page Setup ---
-$pageTitle = "DB Manager";
+$pageTitle = "KauansAllesDatenbank";
 require_once './include/header.php';
 ?>
 
