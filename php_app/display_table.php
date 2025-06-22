@@ -6,6 +6,7 @@ $columnsInfo = []; // Will store full column info
 $rows = [];
 $message = null;
 $error_message = null;
+$entryToEdit = null;
 
 // --- Get Selected Table Name ---
 if (isset($_GET['table_name']) && !empty($_GET['table_name'])) {
@@ -32,6 +33,62 @@ if ($pdo && $selectedTableName) {
          $selectedTableName = null;
     }
 }
+
+// --- Handle Delete Entry ---
+if ($pdo && $selectedTableName && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_entry'])) {
+    $entryId = $_POST['entry_id'] ?? null;
+    if ($entryId) {
+        try {
+            $sql = "DELETE FROM `" . $selectedTableName . "` WHERE `id` = ?";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$entryId]);
+            $message = "Eintrag erfolgreich gelöscht.";
+        } catch (PDOException $e) {
+            $error_message = "Fehler beim Löschen des Eintrags: " . htmlspecialchars($e->getMessage());
+        }
+    }
+}
+
+
+// --- Handle Update Entry ---
+if ($pdo && $selectedTableName && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_entry'])) {
+    $entryId = $_POST['entry_id'] ?? null;
+    if ($entryId) {
+        try {
+            $stmtDesc = $pdo->query("DESCRIBE `" . $selectedTableName . "`");
+            $currentColumnsMeta = $stmtDesc->fetchAll(PDO::FETCH_ASSOC);
+
+            $updateSetSql = [];
+            $updateValues = [];
+
+            foreach ($currentColumnsMeta as $colMeta) {
+                $colName = $colMeta['Field'];
+                // Skip the id field from being updated
+                if (strtolower($colName) === 'id') {
+                    continue;
+                }
+                
+                if (array_key_exists($colName, $_POST['data'])) {
+                    $updateSetSql[] = "`" . $colName . "` = ?";
+                    $submittedValue = $_POST['data'][$colName];
+                    $updateValues[] = ($submittedValue === '') ? null : $submittedValue;
+                }
+            }
+            
+            if (!empty($updateSetSql)) {
+                $updateValues[] = $entryId; // Add entryId to the end for the WHERE clause
+                $sql = "UPDATE `" . $selectedTableName . "` SET " . implode(', ', $updateSetSql) . " WHERE `id` = ?";
+                $stmtUpdate = $pdo->prepare($sql);
+                $stmtUpdate->execute($updateValues);
+                $message = "Eintrag erfolgreich aktualisiert.";
+            }
+
+        } catch (PDOException $e) {
+            $error_message = "Fehler beim Aktualisieren des Eintrags: " . htmlspecialchars($e->getMessage());
+        }
+    }
+}
+
 
 // --- Handle Add Entry Form Submission ---
 if ($pdo && $selectedTableName && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_entry'])) {
@@ -71,6 +128,19 @@ if ($pdo && $selectedTableName && $_SERVER['REQUEST_METHOD'] === 'POST' && isset
         $error_message = "Fehler beim Hinzufügen des Eintrags: " . htmlspecialchars($e->getMessage());
     }
 }
+
+// --- Fetch data for the entry to be edited ---
+if ($pdo && $selectedTableName && isset($_GET['edit_id'])) {
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM `" . $selectedTableName . "` WHERE `id` = ?");
+        $stmt->execute([$_GET['edit_id']]);
+        $entryToEdit = $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Append to existing error message if any
+        $error_message = ($error_message ? $error_message . "<br>" : "") . "Fehler beim Abrufen des Eintrags zum Bearbeiten: " . htmlspecialchars($e->getMessage());
+    }
+}
+
 
 // --- Fetch Table Columns and Data for Display ---
 if ($pdo && $selectedTableName) {
@@ -146,6 +216,7 @@ if ($pdo && $selectedTableName) {
                                 <?php foreach ($columnsInfo as $colInfo): ?>
                                     <th><?php echo htmlspecialchars($colInfo['Field']); ?></th>
                                 <?php endforeach; ?>
+                                <th>Aktionen</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -155,11 +226,19 @@ if ($pdo && $selectedTableName) {
                                         <?php foreach ($columnsInfo as $colInfo): ?>
                                             <td><?php echo htmlspecialchars($row[$colInfo['Field']] ?? 'NULL'); ?></td>
                                         <?php endforeach; ?>
+                                        <td>
+                                            <a href="display_table.php?table_name=<?php echo urlencode($selectedTableName); ?>&edit_id=<?php echo htmlspecialchars($row['id']); ?>" class="action-btn-secondary">Bearbeiten</a>
+                                            <form action="display_table.php?table_name=<?php echo urlencode($selectedTableName); ?>" method="post" style="display:inline;" onsubmit="return confirm('Diesen Eintrag wirklich löschen?');">
+                                                <input type="hidden" name="delete_entry" value="1">
+                                                <input type="hidden" name="entry_id" value="<?php echo htmlspecialchars($row['id']); ?>">
+                                                <button type="submit" class="action-btn-danger">Löschen</button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="<?php echo count($columnsInfo); ?>">Keine Daten gefunden.</td>
+                                    <td colspan="<?php echo count($columnsInfo) + 1; ?>">Keine Daten gefunden.</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
@@ -167,12 +246,41 @@ if ($pdo && $selectedTableName) {
                 </div>
             </section>
 
+            <?php if ($entryToEdit): ?>
+            <section class="section edit-entry-section">
+                <h2>Eintrag #<?php echo htmlspecialchars($entryToEdit['id']); ?> bearbeiten ✏️</h2>
+                <form action="display_table.php?table_name=<?php echo urlencode($selectedTableName); ?>" method="post" class="styled-form">
+                    <input type="hidden" name="update_entry" value="1">
+                    <input type="hidden" name="entry_id" value="<?php echo htmlspecialchars($entryToEdit['id']); ?>">
+                    <?php foreach ($columnsInfo as $colInfo): ?>
+                        <?php if (strtolower($colInfo['Field']) !== 'id'): ?>
+                            <div class="form-group">
+                                <label for="data_<?php echo htmlspecialchars($colInfo['Field']); ?>"><?php echo htmlspecialchars($colInfo['Field']); ?>:</label>
+                                <?php
+                                    $inputType = 'text';
+                                    if (strtoupper($colInfo['Type']) === 'DATE') $inputType = 'date';
+                                    elseif (strtoupper($colInfo['Type']) === 'BOOLEAN' || strtoupper($colInfo['Type']) === 'TINYINT(1)') $inputType = 'checkbox';
+                                    elseif (strpos(strtoupper($colInfo['Type']), 'INT') !== false) $inputType = 'number';
+                                ?>
+                                <input type="<?php echo $inputType; ?>"
+                                       id="data_<?php echo htmlspecialchars($colInfo['Field']); ?>"
+                                       name="data[<?php echo htmlspecialchars($colInfo['Field']); ?>]"
+                                       value="<?php echo htmlspecialchars($entryToEdit[$colInfo['Field']] ?? ''); ?>"
+                                       <?php if($inputType === 'checkbox' && !empty($entryToEdit[$colInfo['Field']])) echo 'checked'; ?>
+                                       placeholder="Gib <?php echo htmlspecialchars($colInfo['Type']); ?> ein">
+                            </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                    <button type="submit" class="action-btn">Eintrag aktualisieren</button>
+                    <a href="display_table.php?table_name=<?php echo urlencode($selectedTableName); ?>" class="action-btn-secondary">Abbrechen</a>
+                </form>
+            </section>
+            <?php else: ?>
             <section class="section add-entry-section">
                 <h2>Neuen Eintrag hinzufügen ➕</h2>
                 <form action="display_table.php?table_name=<?php echo urlencode($selectedTableName); ?>" method="post" class="styled-form">
                     <input type="hidden" name="add_entry" value="1">
                     <?php foreach ($columnsInfo as $colInfo): ?>
-                        <?php // Skip auto_increment columns for the add form ?>
                         <?php if (strpos(strtolower($colInfo['Extra']), 'auto_increment') === false): ?>
                             <div class="form-group">
                                 <label for="data_<?php echo htmlspecialchars($colInfo['Field']); ?>">
@@ -181,8 +289,6 @@ if ($pdo && $selectedTableName) {
                                 <?php
                                     $inputType = 'text';
                                     $inputAttrs = '';
-                                    
-                                    // Determine input type based on column type
                                     if (strtoupper($colInfo['Type']) === 'DATE') {
                                         $inputType = 'date';
                                     } elseif (strtoupper($colInfo['Type']) === 'BOOLEAN' || strtoupper($colInfo['Type']) === 'TINYINT(1)') {
@@ -206,10 +312,10 @@ if ($pdo && $selectedTableName) {
                     <button type="submit" class="action-btn">Eintrag hinzufügen</button>
                 </form>
             </section>
+            <?php endif; ?>
         <?php elseif (!$error_message): ?>
              <p>Tabellendaten können nicht angezeigt werden.</p>
         <?php endif; ?>
     </main>
 </body>
 </html>
-

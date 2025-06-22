@@ -223,3 +223,30 @@ a {
 .filter-input::placeholder {
     color: #6b7280;
 }
+
+
+/* Add this to your existing Buttons section in style.css */
+.action-btn-danger {
+    background-color: #dc3545; /* A standard red color for danger */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    margin-top: 10px;
+    margin-right: 10px;
+    text-decoration: none; /* For links styled as buttons */
+    display: inline-block; /* For links */
+    text-align: center;
+}
+
+.action-btn-danger:hover {
+    background-color: #c82333; /* A darker red on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}

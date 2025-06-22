@@ -6,6 +6,23 @@ $message = null;
 $error_message = null;
 $valid_column_types = ['TEXT', 'INT', 'DATE', 'BOOLEAN'];
 
+// --- Handle Delete Table Form Submission ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_table'])) {
+    $tableToDelete = trim($_POST['table_to_delete'] ?? '');
+
+    if (!is_valid_name($tableToDelete)) {
+        $error_message = "Ungültiger Tabellenname zum Löschen.";
+    } else {
+        try {
+            // Drop the table
+            $pdo->exec("DROP TABLE `" . $tableToDelete . "`");
+            $message = "Tabelle '" . htmlspecialchars($tableToDelete) . "' wurde erfolgreich gelöscht.";
+        } catch (PDOException $e) {
+            $error_message = "Fehler beim Löschen der Tabelle: " . htmlspecialchars($e->getMessage());
+        }
+    }
+}
+
 // --- Handle Create Table Form Submission ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_table'])) {
     $newTableName = trim($_POST['table_name'] ?? '');
@@ -92,6 +109,11 @@ try {
                             <a href="display_table.php?table_name=<?php echo urlencode($tableName); ?>" class="table-link">
                                 <?php echo htmlspecialchars($tableName); ?>
                             </a>
+                            <form action="index.php" method="post" onsubmit="return confirm('Möchten Sie diese Tabelle wirklich löschen?');" style="display: inline; margin-left: 10px;">
+                                <input type="hidden" name="delete_table" value="1">
+                                <input type="hidden" name="table_to_delete" value="<?php echo htmlspecialchars($tableName); ?>">
+                                <button type="submit" class="action-btn-danger">Löschen</button>
+                            </form>
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -128,4 +150,3 @@ try {
     </main>
 </body>
 </html>
-
